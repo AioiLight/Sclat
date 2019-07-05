@@ -13,6 +13,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -31,6 +32,10 @@ public class GameMgr implements Listener{
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e){
         Player player = e.getPlayer();
+        if(DataMgr.getPlayerDataMap().containsKey(player)){
+            if(DataMgr.getPlayerData(player).isInMatch())
+                return;
+        }
         player.setGameMode(GameMode.ADVENTURE);
         PlayerData data = new PlayerData(player);
         data.setWeaponClass(DataMgr.getWeaponClass("わかばシューター"));
@@ -54,16 +59,25 @@ public class GameMgr implements Listener{
         joinmeta.setDisplayName("メインメニュー");
         join.setItemMeta(joinmeta);
         player.getInventory().setItem(0, join);
-        Shooter.ShooterRunnable(player);
+        //Shooter.ShooterRunnable(player);
+        
         //SquidMgr.SquidRunnable(player);
     }
     
     @EventHandler
-    public void noDamageByFall(EntityDamageEvent event){
+    public void onDamageByFall(EntityDamageEvent event){
         if (event.getEntity() instanceof Player){
             if(event.getCause() == DamageCause.FALL)
                 event.setCancelled(true);
         }
+    }
+    
+    @EventHandler
+    public void onPlaceBlockByEntity(EntityChangeBlockEvent event){
+        if (!(event.getEntity() instanceof Player)){
+            event.setCancelled(true);
+        }
+    
     }
     
 }

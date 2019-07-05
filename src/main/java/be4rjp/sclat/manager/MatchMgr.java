@@ -366,13 +366,24 @@ public class MatchMgr {
                             //npcle = (LivingEntity)npc.getEntity();
                             //npcle.getEquipment().setItemInMainHand(new ItemStack(Material.WOODEN_HOE));
                         }
+                        
+                        
+                        if(s >= 221 && s <= 280){
+                            p.getInventory().setItem(0, new ItemStack(org.bukkit.Material.AIR));
+                            p.setGameMode(GameMode.ADVENTURE);
+                            p.setExp(0.99F);
+                            Location introl = DataMgr.getPlayerData(p).getMatchLocation();
+                            p.teleport(introl);
+                        }
+                        
                         if(s == 281){
                             //playerclass
                             for(Player player : Main.getPlugin(Main.class).getServer().getOnlinePlayers()){
                                 p.showPlayer(Main.getPlugin(), player);
                             }
                             p.getInventory().setItem(0, DataMgr.getPlayerData(p).getWeaponClass().getMainWeapon().getWeaponIteamStack());
-                            //Shooter.ShooterRunnable(p);
+                            SubWeaponMgr.setSubWeapon(p);
+                            Shooter.ShooterRunnable(p);
                             if(DataMgr.getPlayerData(p).getWeaponClass().getMainWeapon().getShootTick() < 5){
                                 DataMgr.getPlayerData(p).setTick(10);
                                 //Shooter.ShooterRunnable(p);
@@ -381,15 +392,7 @@ public class MatchMgr {
                             DataMgr.getPlayerData(p).setIsInMatch(true);
                             InMatchCounter(p);
                             p.playSound(p.getLocation(), Sound.ENTITY_ZOMBIE_INFECT, 10.0F, 2.0F);
-                            
-                        }
-                        
-                        if(s >= 221 && s <= 280){
-                            p.getInventory().setItem(0, new ItemStack(org.bukkit.Material.AIR));
-                            p.setGameMode(GameMode.ADVENTURE);
-                            p.setExp(0.99F);
-                            Location introl = DataMgr.getPlayerData(p).getMatchLocation();
-                            p.teleport(introl);
+                            cancel();
                         }
                         
 
